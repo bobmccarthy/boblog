@@ -1,0 +1,35 @@
+nav {
+  padding: 0 1em;
+  background-color: #0EAD00; }
+  nav .log {
+    height: 4em;
+    margin: -0.5em 0 0 2em; }
+  nav .b {
+    font-size: 3em; }
+  nav .img {
+    height: 2em;
+    margin-top: 1.4em;
+    margin-bottom: -0.5em; }
+
+.container {
+  margin: 0 auto;
+  padding: 0 5em; }
+
+.post {
+  background-color: #F6F6F6;
+  border: 0.5em #00A3C7;
+  border-style: outset;
+  margin-top: 2em;
+  padding: 2em; }
+  .post .userPic {
+    float: left;
+    height: 5em;
+    margin-left: -9em; }
+  .post .date {
+    margin: -1.8em 0 2em 1em; }
+  .post .postPic {
+    margin: 1em 0;
+    width: 100%;
+    max-width: 35em; }
+  .post .btn {
+    background-color: #8BC700; }
