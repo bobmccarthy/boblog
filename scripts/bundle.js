@@ -31767,7 +31767,11 @@ module.exports = React.createClass({
 					'div',
 					null,
 					'Posted By ',
-					post.get('user'),
+					React.createElement(
+						'a',
+						{ href: '#user/' + post.get('user') },
+						post.get('user')
+					),
 					', in the category: ',
 					post.get('category')
 				),
@@ -31794,7 +31798,7 @@ module.exports = React.createClass({
 
 });
 
-},{"../models/PostModel":169,"react":160}],162:[function(require,module,exports){
+},{"../models/PostModel":170,"react":160}],162:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -32042,7 +32046,7 @@ module.exports = React.createClass({
 		}
 		return React.createElement(
 			'div',
-			{ className: 'container' },
+			{ className: 'container postFormBack' },
 			React.createElement(
 				'div',
 				{ className: 'row' },
@@ -32061,7 +32065,12 @@ module.exports = React.createClass({
 						React.createElement(
 							'div',
 							{ className: 'input-field col s12' },
-							React.createElement('input', { type: 'text', ref: 'title', className: 'validate', placeholder: 'Title' })
+							React.createElement(
+								'div',
+								null,
+								'Title'
+							),
+							React.createElement('input', { type: 'text', ref: 'title', className: 'validate' })
 						)
 					),
 					React.createElement(
@@ -32070,7 +32079,12 @@ module.exports = React.createClass({
 						React.createElement(
 							'div',
 							{ className: 'input-field col s12' },
-							React.createElement('textarea', { id: 'textarea1', ref: 'body', className: 'materialize-textarea', placeholder: 'Type post details here...' })
+							React.createElement(
+								'div',
+								null,
+								'Post Details'
+							),
+							React.createElement('textarea', { id: 'textarea1', ref: 'body', className: 'materialize-textarea' })
 						)
 					),
 					React.createElement(
@@ -32079,7 +32093,12 @@ module.exports = React.createClass({
 						React.createElement(
 							'div',
 							{ className: 'input-field col s6' },
-							React.createElement('input', { type: 'text', ref: 'image', placeholder: 'Image URL' })
+							React.createElement(
+								'div',
+								null,
+								'Image URL'
+							),
+							React.createElement('input', { type: 'text', ref: 'image' })
 						),
 						React.createElement(
 							'div',
@@ -32155,7 +32174,7 @@ module.exports = React.createClass({
 	}
 });
 
-},{"../models/PostModel":169,"react":160}],165:[function(require,module,exports){
+},{"../models/PostModel":170,"react":160}],165:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -32177,7 +32196,7 @@ module.exports = React.createClass({
 		}
 		return React.createElement(
 			"div",
-			{ className: "container" },
+			{ className: "container postFormBack" },
 			React.createElement(
 				"div",
 				{ className: "row" },
@@ -32310,7 +32329,7 @@ module.exports = React.createClass({
 		}
 		return React.createElement(
 			'div',
-			{ className: 'container' },
+			{ className: 'container postFormBack' },
 			React.createElement(
 				'div',
 				{ className: 'row' },
@@ -32391,7 +32410,7 @@ module.exports = React.createClass({
 								{ className: 'browser-default', ref: 'category' },
 								React.createElement(
 									'option',
-									{ value: '', disabled: true, selected: true },
+									{ value: '' },
 									'Background'
 								),
 								React.createElement(
@@ -32551,7 +32570,102 @@ module.exports = React.createClass({
 	}
 });
 
-},{"../models/PostModel":169,"react":160}],168:[function(require,module,exports){
+},{"../models/PostModel":170,"react":160}],168:[function(require,module,exports){
+'use strict';
+
+var React = require('react');
+var $ = require('jquery');
+var UserModel = require('../models/UserModel');
+var query = new Parse.Query(UserModel);
+
+module.exports = React.createClass({
+	displayName: 'exports',
+
+	getInitialState: function getInitialState() {
+		return {
+			user: null,
+			error: null
+		};
+	},
+	componentWillMount: function componentWillMount() {
+		var _this = this;
+
+		query.get(this.props.user).then(function (user) {
+			console.log('made it');
+			_this.setState({
+				user: user
+			});
+		}, function (err) {
+			_this.setState({
+				error: err.message
+			});
+		});
+	},
+	render: function render() {
+		var errorElement = null;
+		if (this.state.error) {
+			errorElement = React.createElement(
+				'p',
+				{ className: 'red' },
+				this.state.error
+			);
+		}
+		var content = React.createElement('img', { className: 'loading', src: 'http://4vector.com/thumb_data/v4l-133092.jpg' });
+		if (this.state.user) {
+			content = React.createElement(
+				'div',
+				null,
+				React.createElement(
+					'div',
+					{ className: 'row col s12' },
+					React.createElement('img', { src: this.state.user.get('photo') })
+				),
+				React.createElement(
+					'div',
+					{ className: 'row col s12' },
+					React.createElement(
+						'div',
+						null,
+						React.createElement(
+							'h2',
+							null,
+							this.state.user.get('username')
+						)
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: 'row col s12' },
+					React.createElement(
+						'div',
+						null,
+						this.state.user.get('email')
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: 'row col s12' },
+					React.createElement(
+						'div',
+						null,
+						'Posted By ',
+						this.state.user.get('about'),
+						', in the category: ',
+						this.state.post.get('category')
+					)
+				)
+			);
+		}
+		return React.createElement(
+			'div',
+			{ className: 'container' },
+			content
+		);
+	}
+
+});
+
+},{"../models/UserModel":171,"jquery":4,"react":160}],169:[function(require,module,exports){
 'use strict';
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -32569,6 +32683,7 @@ var PostFormComponent = require('./components/PostFormComponent');
 var LoginComponent = require('./components/LoginComponent');
 var RegisterComponent = require('./components/RegisterComponent');
 var SettingsComponent = require('./components/SettingsComponent');
+var UserComponent = require('./components/UserComponent');
 
 var nav = document.getElementById('nav');
 var main = document.getElementById('main');
@@ -32583,7 +32698,8 @@ $(document).ready(function () {
 			'addPost': 'addPost',
 			'details/:id': 'details',
 			'settings': 'settings',
-			'logout': 'home'
+			'logout': 'home',
+			'user/:id': 'user'
 
 		},
 		home: function home() {
@@ -32614,7 +32730,7 @@ $(document).ready(function () {
 			ReactDOM.render(React.createElement(RegisterComponent, { router: r }), main);
 		},
 		addPost: function addPost() {
-			ReactDOM.render(React.createElement(PostFormComponent, null), main);
+			ReactDOM.render(React.createElement(PostFormComponent, { router: r }), main);
 		},
 		details: function details(id) {
 
@@ -32622,6 +32738,9 @@ $(document).ready(function () {
 		},
 		settings: function settings() {
 			ReactDOM.render(React.createElement(SettingsComponent, { router: r }), main);
+		},
+		user: function user(name) {
+			ReactDOM.render(React.createElement(UserComponent, { router: r, user: name }), main);
 		}
 	});
 
@@ -32631,14 +32750,21 @@ $(document).ready(function () {
 	ReactDOM.render(React.createElement(NavComponent, { router: r }), nav);
 });
 
-},{"./components/ListComponent":161,"./components/LoginComponent":162,"./components/NavComponent":163,"./components/PostFormComponent":164,"./components/RegisterComponent":165,"./components/SettingsComponent":166,"./components/SingleComponent":167,"backbone":1,"jquery":4,"react":160,"react-dom":5}],169:[function(require,module,exports){
+},{"./components/ListComponent":161,"./components/LoginComponent":162,"./components/NavComponent":163,"./components/PostFormComponent":164,"./components/RegisterComponent":165,"./components/SettingsComponent":166,"./components/SingleComponent":167,"./components/UserComponent":168,"backbone":1,"jquery":4,"react":160,"react-dom":5}],170:[function(require,module,exports){
 'use strict';
 
 module.exports = Parse.Object.extend({
 	className: 'Posts'
 });
 
-},{}]},{},[168])
+},{}],171:[function(require,module,exports){
+'use strict';
+
+module.exports = Parse.Object.extend({
+	className: 'User'
+});
+
+},{}]},{},[169])
 
 
 //# sourceMappingURL=bundle.js.map

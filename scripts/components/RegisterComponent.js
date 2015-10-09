@@ -12,7 +12,7 @@ module.exports = React.createClass({
 			);
 		}
 		return (
-			<div className="container">
+			<div className="container postFormBack">
 				<div className="row">
 					<form className="col s12" onSubmit={this.onRegister}>
 						<h1>Register Here</h1>

@@ -13,24 +13,27 @@ module.exports = React.createClass({
 			);
 		}
 		return (
-			<div className="container">
+			<div className="container postFormBack">
 				<div className="row">
 					<form className="col s12" onSubmit={this.onAddPost}>
 						<h1>New Post</h1>
 						{errorElement}
 						<div className="row">
 							<div className="input-field col s12">
-								<input type="text" ref="title" className="validate" placeholder="Title"/>
+								<div>Title</div>
+								<input type="text" ref="title" className="validate" />
 							</div>
 						</div>
 						<div className="row">
 							<div className="input-field col s12">
-								<textarea id="textarea1" ref="body" className="materialize-textarea" placeholder="Type post details here..."></textarea>
+								<div>Post Details</div>
+								<textarea id="textarea1" ref="body" className="materialize-textarea" ></textarea>
 							</div>
 						</div>
 						<div className="row">
 							<div className="input-field col s6">
-								<input type="text" ref="image" placeholder="Image URL"/>
+								<div>Image URL</div>
+								<input type="text" ref="image" />
 							</div>
 							<div className="input-field col s6">
 								<select className="browser-default" ref="category">

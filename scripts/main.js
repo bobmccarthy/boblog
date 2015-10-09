@@ -16,6 +16,7 @@ var PostFormComponent = require('./components/PostFormComponent');
 var LoginComponent = require('./components/LoginComponent');
 var RegisterComponent = require('./components/RegisterComponent');
 var SettingsComponent = require('./components/SettingsComponent');
+var UserComponent = require('./components/UserComponent');
 
 
 var nav = document.getElementById('nav');
@@ -31,7 +32,8 @@ $(document).ready(function(){
 			'addPost': 'addPost',
 			'details/:id': 'details',
 			'settings': 'settings',
-			'logout': 'home'
+			'logout': 'home',
+			'user/:id': 'user'
 			
 
 		},
@@ -66,7 +68,7 @@ $(document).ready(function(){
 			ReactDOM.render(<RegisterComponent router={r} />, main)
 		},
 		addPost: function() {
-			ReactDOM.render(<PostFormComponent />, main)
+			ReactDOM.render(<PostFormComponent router={r}/>, main)
 		},
 		details: function(id){
 			
@@ -74,6 +76,9 @@ $(document).ready(function(){
 		},
 		settings: function(){
 			ReactDOM.render(<SettingsComponent router={r} />, main)
+		},
+		user: function(name){
+			ReactDOM.render(<UserComponent router={r} user={name}/>, main)
 		}
 	});
 

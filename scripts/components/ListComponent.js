@@ -36,7 +36,7 @@ module.exports = React.createClass({
 				<div>{post.get('body')}</div>
 				<div><img className="postPic" src={post.get('picUrl')} /></div>
 				
-				<div>Posted By {post.get('user')}, in the category: {post.get('category')}</div>
+				<div>Posted By <a href={'#user/'+post.get('user')}>{post.get('user')}</a>, in the category: {post.get('category')}</div>
 				<a className="waves-effect waves-light btn"><i className="material-icons left">thumb_up</i>{post.get('likes')} Likes</a>
 			</div>
 			);

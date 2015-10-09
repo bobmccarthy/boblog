@@ -13,7 +13,7 @@ module.exports = React.createClass({
 			);
 		}
 		return (
-			<div className="container">
+			<div className="container postFormBack">
 				<div className="row">
 					<form className="col s12" onSubmit={this.onRegister}>
 						<h3>Personal Info:</h3>
@@ -50,7 +50,7 @@ module.exports = React.createClass({
 						<div className="row">
 							<div className="input-field col s6">
 								<select className="browser-default" ref="category">
-									<option value="" disabled selected>Background</option>
+									<option value="">Background</option>
 									<option value="pallate">Pallate</option>
 									<option value="black">Black Wood</option>
 									<option value="horizon">Horizon Bubble</option>
