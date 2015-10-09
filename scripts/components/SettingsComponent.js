@@ -20,33 +20,29 @@ module.exports = React.createClass({
 						{errorElement}
 						<div className="row">
 							<div className="input-field col s12 l6">
-								<label>User Name</label>
+								<div>User Name</div>
 								<input type="text" ref="name" className="validate" id="reg_name" defaultValue={Parse.User.current().get('username')}/>
 								
 							</div>
 					
 							<div className="input-field col s12 l6">
-								<label>Email Address</label>
+								<div>Email Address</div>
 								<input type="text" ref="email" className="validate" id="email_address" defaultValue={Parse.User.current().get('email')}/>
 								
 							</div>
 						</div>
 						<div className="row">
-							<div className="input-field col s12 l6">
-								<label>Password</label>
-								<input type="password" ref="password" className="validate" id="password" defaultValue={Parse.User.current().get('password')}/>
-								
-							</div>
+							
 						
-							<div className="input-field col s12 l6">
-								<label>Your Pic URL</label>
+							<div className="input-field col s12">
+								<div>Your Pic URL</div>
 								<input type="text" ref="photo"  id="photoP" defaultValue={Parse.User.current().get('photo')}/>
 								
 							</div>
 						</div>
 						<div className="row">
 							<div className="input-field col s12">
-								<label>About <strong>{Parse.User.current().get('username')}</strong></label>
+								<div>About <strong>{Parse.User.current().get('username')}</strong></div>
 								<textarea type="text" ref="about"  id="about" defaultValue={Parse.User.current().get('about')}></textarea>
 								
 							</div>
@@ -73,32 +69,27 @@ module.exports = React.createClass({
 		);
 	},
 	onRegister: function(e) {
-		var url='url("http://www.planwallpaper.com/static/images/colorful-triangles-background_yB0qTG6.jpg")';
 		e.preventDefault();
-		if (this.refs.category.value=='pallate'){
-			var body = $('body');
-			body.style.backgroundImage({Url: url});
-		}
-		var user = new Parse.User();
-		user.signUp(
-			{
-				username: this.refs.name.value,
-				password: this.refs.password.value,
-				email: this.refs.email.value,
-				photo: this.refs.photo.value,
-				about: this.refs.about.value,
-				numPosts: null
+		
+		var user = Parse.User.current();
+		user.save({
+			about: this.refs.about.value,
+			username: this.refs.name.value,
+			email: this.refs.email.value,
+			photo: this.refs.photo.value,
+			background: this.refs.category.value
+		},
+		{
+			success: (u) => {
+				this.props.router.navigate('', {trigger: true});
 			},
-			{
-				success: (u) => {
-					this.props.router.navigate('settings', {trigger: true});
-				},
-				error: (u, error) => {
-					this.setState({
-						error: error.message
-					});
-				}
+			error: (u, error) => {
+				this.setState({
+					error: error.message
+				});
 			}
-		);
+		});
+		console.log('changed');
 	}
+
 });

@@ -31924,6 +31924,14 @@ module.exports = React.createClass({
 		)];
 
 		if (Parse.User.current()) {
+			console.log(Parse.User.current().get('username'));
+
+			var namesky = React.createElement(
+				'a',
+				{ href: '#', className: 'brand-logo center' },
+				Parse.User.current().get('username'),
+				', that is you!'
+			);
 			links.push(React.createElement(
 				'li',
 				{ key: 'settings', className: currentPage === 'settings' ? 'active' : '' },
@@ -31975,6 +31983,7 @@ module.exports = React.createClass({
 		return React.createElement(
 			'div',
 			{ className: 'nav-wrapper' },
+			namesky,
 			React.createElement(
 				'a',
 				{ href: '#', className: 'brand-logo left b' },
@@ -32003,6 +32012,7 @@ module.exports = React.createClass({
 		);
 	},
 	onLogout: function onLogout(e) {
+		console.log('logout');
 		e.preventDefault();
 		Parse.User.logOut();
 		this.props.router.navigate('logout', { trigger: true });
@@ -32320,7 +32330,7 @@ module.exports = React.createClass({
 							'div',
 							{ className: 'input-field col s12 l6' },
 							React.createElement(
-								'label',
+								'div',
 								null,
 								'User Name'
 							),
@@ -32330,7 +32340,7 @@ module.exports = React.createClass({
 							'div',
 							{ className: 'input-field col s12 l6' },
 							React.createElement(
-								'label',
+								'div',
 								null,
 								'Email Address'
 							),
@@ -32342,19 +32352,9 @@ module.exports = React.createClass({
 						{ className: 'row' },
 						React.createElement(
 							'div',
-							{ className: 'input-field col s12 l6' },
+							{ className: 'input-field col s12' },
 							React.createElement(
-								'label',
-								null,
-								'Password'
-							),
-							React.createElement('input', { type: 'password', ref: 'password', className: 'validate', id: 'password', defaultValue: Parse.User.current().get('password') })
-						),
-						React.createElement(
-							'div',
-							{ className: 'input-field col s12 l6' },
-							React.createElement(
-								'label',
+								'div',
 								null,
 								'Your Pic URL'
 							),
@@ -32368,7 +32368,7 @@ module.exports = React.createClass({
 							'div',
 							{ className: 'input-field col s12' },
 							React.createElement(
-								'label',
+								'div',
 								null,
 								'About ',
 								React.createElement(
@@ -32438,23 +32438,18 @@ module.exports = React.createClass({
 	onRegister: function onRegister(e) {
 		var _this = this;
 
-		var url = 'url("http://www.planwallpaper.com/static/images/colorful-triangles-background_yB0qTG6.jpg")';
 		e.preventDefault();
-		if (this.refs.category.value == 'pallate') {
-			var body = $('body');
-			body.style.backgroundImage({ Url: url });
-		}
-		var user = new Parse.User();
-		user.signUp({
+
+		var user = Parse.User.current();
+		user.save({
+			about: this.refs.about.value,
 			username: this.refs.name.value,
-			password: this.refs.password.value,
 			email: this.refs.email.value,
 			photo: this.refs.photo.value,
-			about: this.refs.about.value,
-			numPosts: null
+			background: this.refs.category.value
 		}, {
 			success: function success(u) {
-				_this.props.router.navigate('settings', { trigger: true });
+				_this.props.router.navigate('', { trigger: true });
 			},
 			error: function error(u, _error) {
 				_this.setState({
@@ -32462,7 +32457,9 @@ module.exports = React.createClass({
 				});
 			}
 		});
+		console.log('changed');
 	}
+
 });
 
 },{"jquery":4,"react":160}],167:[function(require,module,exports){
@@ -32576,43 +32573,63 @@ var SettingsComponent = require('./components/SettingsComponent');
 var nav = document.getElementById('nav');
 var main = document.getElementById('main');
 
-var Router = Backbone.Router.extend({
-	routes: {
-		'': 'home',
-		'login': 'login',
-		'register': 'register',
-		'addPost': 'addPost',
-		'logout': 'home',
-		'details/:id': 'details',
-		'settings': 'settings'
+$(document).ready(function () {
 
-	},
-	home: function home() {
+	var Router = Backbone.Router.extend({
+		routes: {
+			'': 'home',
+			'login': 'login',
+			'register': 'register',
+			'addPost': 'addPost',
+			'details/:id': 'details',
+			'settings': 'settings',
+			'logout': 'home'
 
-		ReactDOM.render(React.createElement(ListComponent, null), main);
-	},
-	login: function login() {
-		ReactDOM.render(React.createElement(LoginComponent, { router: r }), main);
-	},
-	register: function register() {
-		ReactDOM.render(React.createElement(RegisterComponent, { router: r }), main);
-	},
-	addPost: function addPost() {
-		ReactDOM.render(React.createElement(PostFormComponent, null), main);
-	},
-	details: function details(id) {
+		},
+		home: function home() {
+			ReactDOM.render(React.createElement(ListComponent, null), main);
+			if (Parse.User.current()) {
+				var url;
+				console.log(Parse.User.current().get('background'));
+				if (Parse.User.current().get('background') == 'pallate') {
+					url = 'url("http://www.planwallpaper.com/static/images/colorful-triangles-background_yB0qTG6.jpg")';
+				} else if (Parse.User.current().get('background') == 'horizon') {
+					url = 'url("http://4vector.com/i/free-vector-beautiful-trend-background-05-vector_015375_beautiful_trend_background_05_vector.jpg")';
+				} else if (Parse.User.current().get('background') == 'black') {
+					url = 'url("http://www.planwallpaper.com/static/images/6790904-free-background-wallpaper.jpg")';
+				} else if (Parse.User.current().get('background') == 'swirl') {
+					url = 'url("http://www.clothedinscarlet.org/wp-content/uploads/2014/04/BlueSwirl_background.jpg")';
+				}
+				var body = document.getElementById('body');
+				body.style.backgroundImage = url;
+			} else {
+				var body = document.getElementById('body');
+				body.style.backgroundImage = '';
+			}
+		},
+		login: function login() {
+			ReactDOM.render(React.createElement(LoginComponent, { router: r }), main);
+		},
+		register: function register() {
+			ReactDOM.render(React.createElement(RegisterComponent, { router: r }), main);
+		},
+		addPost: function addPost() {
+			ReactDOM.render(React.createElement(PostFormComponent, null), main);
+		},
+		details: function details(id) {
 
-		ReactDOM.render(React.createElement(SingleComponent, { postId: id }), main);
-	},
-	settings: function settings() {
-		ReactDOM.render(React.createElement(SettingsComponent, { router: r }), main);
-	}
+			ReactDOM.render(React.createElement(SingleComponent, { postId: id }), main);
+		},
+		settings: function settings() {
+			ReactDOM.render(React.createElement(SettingsComponent, { router: r }), main);
+		}
+	});
+
+	var r = new Router();
+	Backbone.history.start();
+
+	ReactDOM.render(React.createElement(NavComponent, { router: r }), nav);
 });
-
-var r = new Router();
-Backbone.history.start();
-
-ReactDOM.render(React.createElement(NavComponent, { router: r }), nav);
 
 },{"./components/ListComponent":161,"./components/LoginComponent":162,"./components/NavComponent":163,"./components/PostFormComponent":164,"./components/RegisterComponent":165,"./components/SettingsComponent":166,"./components/SingleComponent":167,"backbone":1,"jquery":4,"react":160,"react-dom":5}],169:[function(require,module,exports){
 'use strict';

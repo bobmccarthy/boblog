@@ -10,6 +10,9 @@ nav {
     height: 2em;
     margin-top: 1.4em;
     margin-bottom: -0.5em; }
+  nav .userNav {
+    font-size: 2em;
+    margin-right: 1em; }
 
 .container {
   margin: 0 auto;
