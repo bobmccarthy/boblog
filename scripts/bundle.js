@@ -31713,34 +31713,23 @@ module.exports = React.createClass({
 
 	getInitialState: function getInitialState() {
 		return {
-			posts: []
+			posts: [],
+			error: null
 		};
 	},
 	componentWillMount: function componentWillMount() {
 		var _this = this;
 
-		console.log('yay!');
-		if (this.props.postId) {
+		query.find().then(function (posts) {
 
-			query.get(this.props.postId).then(function (postModelFromServer) {
-				_this.setState({
-					posts: postModelFromServer
-				});
-			}, function (err) {
-				_this.setState({
-					error: err.message
-				});
-			});
-		} else {
-			query.find().then(function (posts) {
-				_this.setState({ posts: posts });
-			}, function (err) {
-				console.log(err);
-			});
-		}
+			_this.setState({ posts: posts });
+		}, function (err) {
+			console.log(err);
+			_this.setState({ error: err.message });
+		});
 	},
 	render: function render() {
-		var that = this;
+
 		var postElements = this.state.posts.map(function (post) {
 			return React.createElement(
 				'div',
@@ -31754,7 +31743,7 @@ module.exports = React.createClass({
 						null,
 						React.createElement(
 							'a',
-							{ href: '#/' + post.id },
+							{ href: '#details/' + post.id },
 							post.get('title')
 						)
 					)
@@ -31805,7 +31794,7 @@ module.exports = React.createClass({
 
 });
 
-},{"../models/PostModel":167,"react":160}],162:[function(require,module,exports){
+},{"../models/PostModel":169,"react":160}],162:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -31937,11 +31926,20 @@ module.exports = React.createClass({
 		if (Parse.User.current()) {
 			links.push(React.createElement(
 				'li',
+				{ key: 'settings', className: currentPage === 'settings' ? 'active' : '' },
+				React.createElement(
+					'a',
+					{ href: '#settings' },
+					React.createElement('img', { className: 'img', src: 'http://www.clipartbest.com/cliparts/Rid/j76/Ridj766i9.png' })
+				)
+			));
+			links.push(React.createElement(
+				'li',
 				{ key: 'addPost', className: currentPage === 'addPost' ? 'active' : '' },
 				React.createElement(
 					'a',
 					{ href: '#addPost' },
-					'Add Post'
+					React.createElement('img', { className: 'img', src: 'http://www.clker.com/cliparts/w/w/q/8/l/l/orange-plus-hi.png' })
 				)
 			));
 			links.push(React.createElement(
@@ -31950,7 +31948,7 @@ module.exports = React.createClass({
 				React.createElement(
 					'a',
 					{ href: '#logout', onClick: this.onLogout },
-					'Logout'
+					React.createElement('img', { className: 'img', src: 'http://www.cliparthut.com/clip-arts/181/logout-icon-181922.png' })
 				)
 			));
 		} else {
@@ -32147,7 +32145,7 @@ module.exports = React.createClass({
 	}
 });
 
-},{"../models/PostModel":167,"react":160}],165:[function(require,module,exports){
+},{"../models/PostModel":169,"react":160}],165:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -32281,6 +32279,283 @@ module.exports = React.createClass({
 
 },{"react":160}],166:[function(require,module,exports){
 'use strict';
+
+var React = require('react');
+var $ = require('jquery');
+
+module.exports = React.createClass({
+	displayName: 'exports',
+
+	getInitialState: function getInitialState() {
+		return { error: null };
+	},
+	render: function render() {
+		var errorElement = null;
+		if (this.state.error) {
+			errorElement = React.createElement(
+				'p',
+				{ className: 'red' },
+				this.state.error
+			);
+		}
+		return React.createElement(
+			'div',
+			{ className: 'container' },
+			React.createElement(
+				'div',
+				{ className: 'row' },
+				React.createElement(
+					'form',
+					{ className: 'col s12', onSubmit: this.onRegister },
+					React.createElement(
+						'h3',
+						null,
+						'Personal Info:'
+					),
+					errorElement,
+					React.createElement(
+						'div',
+						{ className: 'row' },
+						React.createElement(
+							'div',
+							{ className: 'input-field col s12 l6' },
+							React.createElement(
+								'label',
+								null,
+								'User Name'
+							),
+							React.createElement('input', { type: 'text', ref: 'name', className: 'validate', id: 'reg_name', defaultValue: Parse.User.current().get('username') })
+						),
+						React.createElement(
+							'div',
+							{ className: 'input-field col s12 l6' },
+							React.createElement(
+								'label',
+								null,
+								'Email Address'
+							),
+							React.createElement('input', { type: 'text', ref: 'email', className: 'validate', id: 'email_address', defaultValue: Parse.User.current().get('email') })
+						)
+					),
+					React.createElement(
+						'div',
+						{ className: 'row' },
+						React.createElement(
+							'div',
+							{ className: 'input-field col s12 l6' },
+							React.createElement(
+								'label',
+								null,
+								'Password'
+							),
+							React.createElement('input', { type: 'password', ref: 'password', className: 'validate', id: 'password', defaultValue: Parse.User.current().get('password') })
+						),
+						React.createElement(
+							'div',
+							{ className: 'input-field col s12 l6' },
+							React.createElement(
+								'label',
+								null,
+								'Your Pic URL'
+							),
+							React.createElement('input', { type: 'text', ref: 'photo', id: 'photoP', defaultValue: Parse.User.current().get('photo') })
+						)
+					),
+					React.createElement(
+						'div',
+						{ className: 'row' },
+						React.createElement(
+							'div',
+							{ className: 'input-field col s12' },
+							React.createElement(
+								'label',
+								null,
+								'About ',
+								React.createElement(
+									'strong',
+									null,
+									Parse.User.current().get('username')
+								)
+							),
+							React.createElement('textarea', { type: 'text', ref: 'about', id: 'about', defaultValue: Parse.User.current().get('about') })
+						)
+					),
+					React.createElement(
+						'div',
+						{ className: 'row' },
+						React.createElement(
+							'div',
+							{ className: 'input-field col s6' },
+							React.createElement(
+								'select',
+								{ className: 'browser-default', ref: 'category' },
+								React.createElement(
+									'option',
+									{ value: '', disabled: true, selected: true },
+									'Background'
+								),
+								React.createElement(
+									'option',
+									{ value: 'pallate' },
+									'Pallate'
+								),
+								React.createElement(
+									'option',
+									{ value: 'black' },
+									'Black Wood'
+								),
+								React.createElement(
+									'option',
+									{ value: 'horizon' },
+									'Horizon Bubble'
+								),
+								React.createElement(
+									'option',
+									{ value: 'swirl' },
+									'Blue Swirl'
+								),
+								React.createElement(
+									'option',
+									{ value: 'other' },
+									'Other'
+								)
+							)
+						),
+						React.createElement(
+							'div',
+							{ className: 'col s6' },
+							React.createElement(
+								'button',
+								{ className: 'waves-effect waves-light btn' },
+								'Save Changes'
+							)
+						)
+					)
+				)
+			)
+		);
+	},
+	onRegister: function onRegister(e) {
+		var _this = this;
+
+		var url = 'url("http://www.planwallpaper.com/static/images/colorful-triangles-background_yB0qTG6.jpg")';
+		e.preventDefault();
+		if (this.refs.category.value == 'pallate') {
+			var body = $('body');
+			body.style.backgroundImage({ Url: url });
+		}
+		var user = new Parse.User();
+		user.signUp({
+			username: this.refs.name.value,
+			password: this.refs.password.value,
+			email: this.refs.email.value,
+			photo: this.refs.photo.value,
+			about: this.refs.about.value,
+			numPosts: null
+		}, {
+			success: function success(u) {
+				_this.props.router.navigate('settings', { trigger: true });
+			},
+			error: function error(u, _error) {
+				_this.setState({
+					error: _error.message
+				});
+			}
+		});
+	}
+});
+
+},{"jquery":4,"react":160}],167:[function(require,module,exports){
+'use strict';
+
+var React = require('react');
+var PostModel = require('../models/PostModel');
+var query = new Parse.Query(PostModel);
+
+module.exports = React.createClass({
+	displayName: 'exports',
+
+	getInitialState: function getInitialState() {
+		return {
+			post: null,
+			error: null
+		};
+	},
+	componentWillMount: function componentWillMount() {
+		var _this = this;
+
+		query.get(this.props.postId).then(function (post) {
+			_this.setState({
+				post: post
+			});
+		}, function (err) {
+			_this.setState({
+				error: err.message
+			});
+		});
+	},
+	render: function render() {
+		var content = React.createElement('img', { className: 'loading', src: 'http://4vector.com/thumb_data/v4l-133092.jpg' });
+		if (this.state.post) {
+			content = React.createElement(
+				'div',
+				{ className: 'post' },
+				React.createElement('img', { src: this.state.post.get('userPic'), alt: '', className: 'circle responsive-img userPic' }),
+				React.createElement(
+					'div',
+					null,
+					React.createElement(
+						'h2',
+						null,
+						this.state.post.get('title')
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: 'date' },
+					this.state.post.get('date')
+				),
+				React.createElement(
+					'div',
+					null,
+					this.state.post.get('body')
+				),
+				React.createElement(
+					'div',
+					null,
+					React.createElement('img', { className: 'postPic', src: this.state.post.get('picUrl') })
+				),
+				React.createElement(
+					'div',
+					null,
+					'Posted By ',
+					this.state.post.get('user'),
+					', in the category: ',
+					this.state.post.get('category')
+				),
+				React.createElement(
+					'a',
+					{ className: 'waves-effect waves-light btn' },
+					React.createElement(
+						'i',
+						{ className: 'material-icons left' },
+						'thumb_up'
+					),
+					this.state.post.get('likes'),
+					' Likes'
+				)
+			);
+		}
+		return React.createElement(
+			'div',
+			{ className: 'container' },
+			content
+		);
+	}
+});
+
+},{"../models/PostModel":169,"react":160}],168:[function(require,module,exports){
+'use strict';
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Backbone = require('backbone');
@@ -32292,24 +32567,29 @@ Parse.initialize('D8YIsuFK4NAiWa9A1QzIqnnJaoUp2LRqHBZqUFY8', 'zCY2YO1jeKWbEuIjU2
 
 var NavComponent = require('./components/NavComponent');
 var ListComponent = require('./components/ListComponent');
+var SingleComponent = require('./components/SingleComponent');
 var PostFormComponent = require('./components/PostFormComponent');
 var LoginComponent = require('./components/LoginComponent');
 var RegisterComponent = require('./components/RegisterComponent');
+var SettingsComponent = require('./components/SettingsComponent');
 
 var nav = document.getElementById('nav');
 var main = document.getElementById('main');
 
 var Router = Backbone.Router.extend({
 	routes: {
-		'(/:id)': 'home',
+		'': 'home',
 		'login': 'login',
 		'register': 'register',
 		'addPost': 'addPost',
-		'logout': 'home'
+		'logout': 'home',
+		'details/:id': 'details',
+		'settings': 'settings'
 
 	},
-	home: function home(id) {
-		ReactDOM.render(React.createElement(ListComponent, { router: r, postId: id }), main);
+	home: function home() {
+
+		ReactDOM.render(React.createElement(ListComponent, null), main);
 	},
 	login: function login() {
 		ReactDOM.render(React.createElement(LoginComponent, { router: r }), main);
@@ -32319,6 +32599,13 @@ var Router = Backbone.Router.extend({
 	},
 	addPost: function addPost() {
 		ReactDOM.render(React.createElement(PostFormComponent, null), main);
+	},
+	details: function details(id) {
+
+		ReactDOM.render(React.createElement(SingleComponent, { postId: id }), main);
+	},
+	settings: function settings() {
+		ReactDOM.render(React.createElement(SettingsComponent, { router: r }), main);
 	}
 });
 
@@ -32327,14 +32614,14 @@ Backbone.history.start();
 
 ReactDOM.render(React.createElement(NavComponent, { router: r }), nav);
 
-},{"./components/ListComponent":161,"./components/LoginComponent":162,"./components/NavComponent":163,"./components/PostFormComponent":164,"./components/RegisterComponent":165,"backbone":1,"jquery":4,"react":160,"react-dom":5}],167:[function(require,module,exports){
+},{"./components/ListComponent":161,"./components/LoginComponent":162,"./components/NavComponent":163,"./components/PostFormComponent":164,"./components/RegisterComponent":165,"./components/SettingsComponent":166,"./components/SingleComponent":167,"backbone":1,"jquery":4,"react":160,"react-dom":5}],169:[function(require,module,exports){
 'use strict';
 
 module.exports = Parse.Object.extend({
 	className: 'Posts'
 });
 
-},{}]},{},[166])
+},{}]},{},[168])
 
 
 //# sourceMappingURL=bundle.js.map

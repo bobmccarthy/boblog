@@ -11,9 +11,11 @@ Parse.initialize('D8YIsuFK4NAiWa9A1QzIqnnJaoUp2LRqHBZqUFY8', 'zCY2YO1jeKWbEuIjU2
 
 var NavComponent = require('./components/NavComponent');
 var ListComponent = require('./components/ListComponent');
+var SingleComponent = require('./components/SingleComponent');
 var PostFormComponent = require('./components/PostFormComponent');
 var LoginComponent = require('./components/LoginComponent');
 var RegisterComponent = require('./components/RegisterComponent');
+var SettingsComponent = require('./components/SettingsComponent');
 
 
 var nav = document.getElementById('nav');
@@ -22,16 +24,19 @@ var main = document.getElementById('main');
 
 var Router = Backbone.Router.extend({
 	routes: {
-		'(/:id)': 'home',
+		'': 'home',
 		'login': 'login',
 		'register': 'register',
 		'addPost': 'addPost',
-		'logout': 'home'
+		'logout': 'home',
+		'details/:id': 'details',
+		'settings': 'settings'
 		
 
 	},
-	home: function(id) {
-		ReactDOM.render(<ListComponent router={r} postId={id}/>, main);
+	home: function() {
+
+		ReactDOM.render(<ListComponent />, main);
 	},
 	login: function() {
 		ReactDOM.render(<LoginComponent router={r} />, main)
@@ -41,6 +46,13 @@ var Router = Backbone.Router.extend({
 	},
 	addPost: function() {
 		ReactDOM.render(<PostFormComponent />, main)
+	},
+	details: function(id){
+		
+		ReactDOM.render(<SingleComponent postId={id}/>, main)
+	},
+	settings: function(){
+		ReactDOM.render(<SettingsComponent router={r} />, main)
 	}
 });
 

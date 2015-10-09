@@ -21,8 +21,9 @@ module.exports = React.createClass({
 		];
 
 		if(Parse.User.current()) {
-			links.push(<li key="addPost" className={currentPage === 'addPost' 	? 'active' : ''}><a href="#addPost">Add Post</a></li>)
-			links.push(<li key="logout"><a href="#logout" onClick={this.onLogout}>Logout</a></li>)
+			links.push(<li key="settings" className={currentPage === 'settings' 	? 'active' : ''}><a href="#settings"><img className="img" src="http://www.clipartbest.com/cliparts/Rid/j76/Ridj766i9.png" /></a></li>)
+			links.push(<li key="addPost" className={currentPage === 'addPost' 	? 'active' : ''}><a href="#addPost"><img className="img" src="http://www.clker.com/cliparts/w/w/q/8/l/l/orange-plus-hi.png" /></a></li>)
+			links.push(<li key="logout"><a href="#logout" onClick={this.onLogout}><img className="img" src="http://www.cliparthut.com/clip-arts/181/logout-icon-181922.png" /></a></li>)
 		}
 		else {
 			links.push(<li key="login" className={currentPage === 'login' 		? 'active' : ''}><a href="#login">Login</a></li>);

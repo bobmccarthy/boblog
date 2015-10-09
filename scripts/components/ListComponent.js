@@ -5,48 +5,32 @@ var query = new Parse.Query(PostModel);
 module.exports = React.createClass({
 	getInitialState: function() {
 	    return {
-	         posts: [] 
+	         posts: [],
+	         error: null
 	    };
 	},
 	componentWillMount: function() {
-		console.log('yay!');
-		if (this.props.postId){
-			
-			query.get(this.props.postId).then(
-				(postModelFromServer) => {
-					this.setState({
-						posts: postModelFromServer
-					});
-				},
-				(err) => {
-					this.setState({
-						error: err.message
-					})
-				}
-			);
-		}else{
-			query
-			.find().then(
-				(posts) => {
-					this.setState({posts: posts});
-				},
-				(err) => {
-					console.log(err);
-				}
-			);
-		}
-		
-
+		query
+		.find().then(
+			(posts) => {
+				
+				this.setState({posts: posts});
+			},
+			(err) => {
+				console.log(err);
+				this.setState({error: err.message})
+			}
+		);
 	},
 	render: function() {
-		var that = this;
+		
 		var postElements = this.state.posts
 		.map(function(post) {
 		return (
 
 			<div className="post">
 				<img src={post.get('userPic')} alt="" className="circle responsive-img userPic"/>
-				<div><h2><a href={'#/'+post.id}>{post.get('title')}</a></h2></div>
+				<div><h2><a href={'#details/'+post.id}>{post.get('title')}</a></h2></div>
 				<div className="date">{post.get('date')}</div>
 				
 				<div>{post.get('body')}</div>
