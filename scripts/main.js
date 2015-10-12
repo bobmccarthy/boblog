@@ -33,7 +33,7 @@ $(document).ready(function(){
 			'details/:id': 'details',
 			'settings': 'settings',
 			'logout': 'home',
-			'user/:id': 'user'
+			'user(/:id)': 'user'
 			
 
 		},
@@ -57,8 +57,9 @@ $(document).ready(function(){
 				var body = document.getElementById('body');
 				body.style.backgroundImage= url;
 			}else{
+				url = 'url("http://www.supertightstuff.com/wp-content/uploads/2009/04/bliss-green-grass-sky-planets.jpg")';
 				var body = document.getElementById('body');
-				body.style.backgroundImage= '';
+				body.style.backgroundImage= url;
 			}
 		},
 		login: function() {
@@ -77,8 +78,9 @@ $(document).ready(function(){
 		settings: function(){
 			ReactDOM.render(<SettingsComponent router={r} />, main)
 		},
-		user: function(name){
-			ReactDOM.render(<UserComponent router={r} user={name}/>, main)
+		user: function(id){
+			console.log('about to render')
+			ReactDOM.render(<UserComponent router={r} user={id}/>, main)
 		}
 	});
 

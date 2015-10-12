@@ -31820,7 +31820,7 @@ module.exports = React.createClass({
 		}
 		return React.createElement(
 			"div",
-			{ className: "container" },
+			{ className: "container postFormBack" },
 			React.createElement(
 				"div",
 				{ className: "row" },
@@ -31866,7 +31866,7 @@ module.exports = React.createClass({
 						{ className: "row" },
 						React.createElement(
 							"button",
-							{ className: "waves-effect waves-light btn" },
+							{ id: "btn", className: "waves-effect waves-light btn" },
 							"Login"
 						)
 					)
@@ -32439,17 +32439,18 @@ module.exports = React.createClass({
 									'Other'
 								)
 							)
-						),
-						React.createElement(
-							'div',
-							{ className: 'col s6' },
-							React.createElement(
-								'button',
-								{ className: 'waves-effect waves-light btn' },
-								'Save Changes'
-							)
 						)
+					),
+					React.createElement(
+						'button',
+						{ id: 'btn', className: 'waves-effect waves-light btn' },
+						'Save Changes'
 					)
+				),
+				React.createElement(
+					'button',
+					{ id: 'cancelBtn', onClick: this.cancel, className: 'waves-effect waves-light btn' },
+					'Cancel'
 				)
 			)
 		);
@@ -32477,6 +32478,9 @@ module.exports = React.createClass({
 			}
 		});
 		console.log('changed');
+	},
+	cancel: function cancel() {
+		this.props.router.navigate('', { trigger: true });
 	}
 
 });
@@ -32574,9 +32578,13 @@ module.exports = React.createClass({
 'use strict';
 
 var React = require('react');
+
 var $ = require('jquery');
 var UserModel = require('../models/UserModel');
+var PostModel = require('../models/PostModel');
+
 var query = new Parse.Query(UserModel);
+var query2 = new Parse.Query(PostModel);
 
 module.exports = React.createClass({
 	displayName: 'exports',
@@ -32584,21 +32592,41 @@ module.exports = React.createClass({
 	getInitialState: function getInitialState() {
 		return {
 			user: null,
+			posts: [],
 			error: null
 		};
 	},
 	componentWillMount: function componentWillMount() {
 		var _this = this;
 
-		query.get(this.props.user).then(function (user) {
-			console.log('made it');
-			_this.setState({
-				user: user
-			});
-		}, function (err) {
-			_this.setState({
-				error: err.message
-			});
+		var that = this;
+		query.equalTo('username', '' + this.props.user + '').first({
+			success: function success(result) {
+				_this.setState({
+					user: result
+				});
+			},
+			error: function error(_error) {
+				console.log('didnt find it');
+				_this.setState({
+					error: err.message
+				});
+			}
+		});
+		query2.equalTo('user', '' + this.props.user + '');
+		query2.find({
+			success: function success(result) {
+				console.log(result);
+				that.setState({
+					posts: result
+				});
+			},
+			error: function error(_error2) {
+				console.log('didnt find it');
+				that.setState({
+					error: err.message
+				});
+			}
 		});
 	},
 	render: function render() {
@@ -32610,6 +32638,65 @@ module.exports = React.createClass({
 				this.state.error
 			);
 		}
+		console.log(this.state.posts);
+		var postElements = this.state.posts.map(function (post) {
+			return React.createElement(
+				'div',
+				{ className: 'post' },
+				React.createElement(
+					'div',
+					null,
+					React.createElement(
+						'h2',
+						null,
+						React.createElement(
+							'a',
+							{ href: '#details/' + post.id },
+							post.get('title')
+						)
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: 'date' },
+					post.get('date')
+				),
+				React.createElement(
+					'div',
+					null,
+					post.get('body')
+				),
+				React.createElement(
+					'div',
+					null,
+					React.createElement('img', { className: 'postPic', src: post.get('picUrl') })
+				),
+				React.createElement(
+					'div',
+					null,
+					'Posted By ',
+					React.createElement(
+						'a',
+						{ href: '#user/' + post.get('user') },
+						post.get('user')
+					),
+					', in the category: ',
+					post.get('category')
+				),
+				React.createElement(
+					'a',
+					{ className: 'waves-effect waves-light btn' },
+					React.createElement(
+						'i',
+						{ className: 'material-icons left' },
+						'thumb_up'
+					),
+					post.get('likes'),
+					' Likes'
+				)
+			);
+		}).reverse();
+
 		var content = React.createElement('img', { className: 'loading', src: 'http://4vector.com/thumb_data/v4l-133092.jpg' });
 		if (this.state.user) {
 			content = React.createElement(
@@ -32617,55 +32704,67 @@ module.exports = React.createClass({
 				null,
 				React.createElement(
 					'div',
-					{ className: 'row col s12' },
-					React.createElement('img', { src: this.state.user.get('photo') })
-				),
-				React.createElement(
-					'div',
-					{ className: 'row col s12' },
+					{ className: 'profPage postFormBack' },
 					React.createElement(
 						'div',
-						null,
+						{ className: 'row col s12' },
+						React.createElement('img', { src: this.state.user.get('photo'), className: 'profPic' })
+					),
+					React.createElement(
+						'div',
+						{ className: 'row col s12' },
 						React.createElement(
-							'h2',
+							'div',
 							null,
-							this.state.user.get('username')
+							React.createElement(
+								'h2',
+								null,
+								'Hi, I am ',
+								this.state.user.get('username'),
+								'.'
+							)
 						)
-					)
-				),
-				React.createElement(
-					'div',
-					{ className: 'row col s12' },
+					),
 					React.createElement(
 						'div',
-						null,
-						this.state.user.get('email')
-					)
-				),
-				React.createElement(
-					'div',
-					{ className: 'row col s12' },
+						{ className: 'row col s12' },
+						React.createElement(
+							'div',
+							null,
+							this.state.user.get('about')
+						)
+					),
 					React.createElement(
 						'div',
-						null,
-						'Posted By ',
-						this.state.user.get('about'),
-						', in the category: ',
-						this.state.post.get('category')
+						{ className: 'row col s12' },
+						React.createElement(
+							'div',
+							null,
+							this.state.user.get('email')
+						)
 					)
 				)
 			);
 		}
 		return React.createElement(
 			'div',
-			{ className: 'container' },
-			content
+			{ className: 'row' },
+			React.createElement(
+				'div',
+				{ className: 'col s8' },
+				postElements
+			),
+			React.createElement(
+				'div',
+				{ className: 'col s4' },
+				content
+			)
 		);
 	}
 
 });
 
-},{"../models/UserModel":171,"jquery":4,"react":160}],169:[function(require,module,exports){
+},{"../models/PostModel":170,"../models/UserModel":171,"jquery":4,"react":160}],169:[function(require,module,exports){
 'use strict';
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -32699,7 +32798,7 @@ $(document).ready(function () {
 			'details/:id': 'details',
 			'settings': 'settings',
 			'logout': 'home',
-			'user/:id': 'user'
+			'user(/:id)': 'user'
 
 		},
 		home: function home() {
@@ -32719,8 +32818,9 @@ $(document).ready(function () {
 				var body = document.getElementById('body');
 				body.style.backgroundImage = url;
 			} else {
+				url = 'url("http://www.supertightstuff.com/wp-content/uploads/2009/04/bliss-green-grass-sky-planets.jpg")';
 				var body = document.getElementById('body');
-				body.style.backgroundImage = '';
+				body.style.backgroundImage = url;
 			}
 		},
 		login: function login() {
@@ -32739,8 +32839,9 @@ $(document).ready(function () {
 		settings: function settings() {
 			ReactDOM.render(React.createElement(SettingsComponent, { router: r }), main);
 		},
-		user: function user(name) {
-			ReactDOM.render(React.createElement(UserComponent, { router: r, user: name }), main);
+		user: function user(id) {
+			console.log('about to render');
+			ReactDOM.render(React.createElement(UserComponent, { router: r, user: id }), main);
 		}
 	});
 

@@ -13,7 +13,7 @@ module.exports = React.createClass({
 			);
 		}
 		return (
-			<div className="container">
+			<div className="container postFormBack">
 				<div className="row">
 					<form className="col s12" onSubmit={this.onLogin}>
 						<h1>Login</h1>
@@ -31,7 +31,7 @@ module.exports = React.createClass({
 							</div>
 						</div>
 						<div className="row">
-							<button className="waves-effect waves-light btn">Login</button>
+							<button id="btn" className="waves-effect waves-light btn">Login</button>
 						</div>
 					</form>
 				</div>

@@ -58,13 +58,18 @@ module.exports = React.createClass({
 									<option value="other">Other</option>
 								</select>
 							</div>
-							<div className="col s6">
-								<button className="waves-effect waves-light btn">Save Changes</button>
-							</div>
-							
 						</div>
+	
+						<button id="btn" className="waves-effect waves-light btn">Save Changes</button>
+							
+						
 					</form>
+					
+					<button id="cancelBtn" onClick={this.cancel} className="waves-effect waves-light btn">Cancel</button>
+					
+					
 				</div>
+
 			</div>
 		);
 	},
@@ -90,6 +95,9 @@ module.exports = React.createClass({
 			}
 		});
 		console.log('changed');
+	},
+	cancel: function(){
+		this.props.router.navigate('', {trigger: true});
 	}
 
 });
