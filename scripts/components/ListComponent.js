@@ -26,6 +26,9 @@ module.exports = React.createClass({
 		
 		var postElements = this.state.posts
 		.map(function(post) {
+			function deletePost(){
+				post.destroy();
+			}
 		return (
 
 			<div className="post">
@@ -38,6 +41,7 @@ module.exports = React.createClass({
 				
 				<div>Posted By <a href={'#user/'+post.get('user')}>{post.get('user')}</a>, in the category: {post.get('category')}</div>
 				<a className="waves-effect waves-light btn"><i className="material-icons left">thumb_up</i>{post.get('likes')} Likes</a>
+				<a id="deletePost" href="#" onClick={deletePost} className="waves-effect waves-light btn"><i className="material-icons left">thumb_down</i>Delete</a>
 			</div>
 			);
 		}).reverse();

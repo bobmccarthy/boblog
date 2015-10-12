@@ -101,11 +101,12 @@ module.exports = React.createClass({
 			)
 		}
 		return (
+			
 				<div className="row">
 					<div className="col s8">
 						{postElements}
 					</div>
-					<div className="col s4">
+					<div className="col s4 content">
 						{content}
 						
 					</div>

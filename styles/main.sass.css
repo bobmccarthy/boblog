@@ -48,6 +48,10 @@ nav {
   .post .btn {
     background-color: #8BC700; }
 
+#deletePost {
+  margin: 1em 1em;
+  float: right; }
+
 #btn {
   background-color: #8BC700;
   width: 100%; }
@@ -64,6 +68,7 @@ nav {
   margin-top: 2em;
   text-align: center;
   overflow: hidden;
+  position: fixed;
   border: 0.5em double grey; }
   .profPage .profPic {
     height: 10em; }

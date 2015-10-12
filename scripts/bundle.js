@@ -31731,6 +31731,9 @@ module.exports = React.createClass({
 	render: function render() {
 
 		var postElements = this.state.posts.map(function (post) {
+			function deletePost() {
+				post.destroy();
+			}
 			return React.createElement(
 				'div',
 				{ className: 'post' },
@@ -31785,6 +31788,16 @@ module.exports = React.createClass({
 					),
 					post.get('likes'),
 					' Likes'
+				),
+				React.createElement(
+					'a',
+					{ id: 'deletePost', href: '#', onClick: deletePost, className: 'waves-effect waves-light btn' },
+					React.createElement(
+						'i',
+						{ className: 'material-icons left' },
+						'thumb_down'
+					),
+					'Delete'
 				)
 			);
 		}).reverse();
@@ -32756,7 +32769,7 @@ module.exports = React.createClass({
 			),
 			React.createElement(
 				'div',
-				{ className: 'col s4' },
+				{ className: 'col s4 content' },
 				content
 			)
 		);
